@@ -1,8 +1,12 @@
 #include <PumpkinEngine.h>
 
-int main(){
-    Pumpkin::Application app;
-    // Pumpkin::Application app1; //fails
-    app.Run();
-    return 0;
+class SandboxApp : public Pumpkin::Application{
+    public:
+        SandboxApp(){
+            //custom ctor
+        }
+};
+
+Pumpkin::Application* Pumpkin::CreateApplication(){
+    return new SandboxApp();
 }

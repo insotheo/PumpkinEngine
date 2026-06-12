@@ -5,15 +5,19 @@ namespace Pumpkin{
     class Application{
     public:
         Application();
-        ~Application();
+        virtual ~Application();
 
         void Run();
-    
+        
+        inline static Application& Get() { return *s_AppInst; }
     private:
         static Application* s_AppInst;
         
         bool m_Running;
     };
+
+    Application* CreateApplication();
+
 }
 
 #endif

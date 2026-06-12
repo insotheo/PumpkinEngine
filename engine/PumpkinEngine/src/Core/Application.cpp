@@ -13,7 +13,7 @@ namespace Pumpkin{
     }
 
     Application::~Application(){
-
+        
     }
 
     void Application::Run(){

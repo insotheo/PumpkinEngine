@@ -1,7 +1,7 @@
 project(PumpkinEngine VERSION 0.0.1 LANGUAGES CXX C)
 
 file(GLOB ENGINE_SOURCES
-src/Application.cpp
+src/Core/*.cpp
 )
 
 set(ENGINE_DEFINITIONS)
