@@ -12,9 +12,7 @@ namespace Pumpkin{
         s_AppInst = this;
     }
 
-    Application::~Application(){
-        
-    }
+    Application::~Application(){}
 
     void Application::Run(){
         m_Running = true;
