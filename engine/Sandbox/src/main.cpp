@@ -1,6 +1,7 @@
-#include <test.h>
+#include <Debug.h>
 
 int main(){
-    test();
+    PE_ASSERT(1 == 0, "Hi!");
+
     return 0;
 }
