@@ -10,6 +10,8 @@ namespace Pumpkin{
         void Run();
     
     private:
+        static Application* s_AppInst;
+        
         bool m_Running;
     };
 }

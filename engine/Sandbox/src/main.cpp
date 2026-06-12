@@ -1,7 +1,8 @@
-#include <Debug.h>
+#include <Application.h>
 
 int main(){
-    PE_ASSERT(1 == 0, "Hi!");
-
+    Pumpkin::Application app;
+    // Pumpkin::Application app1; //fails
+    app.Run();
     return 0;
 }

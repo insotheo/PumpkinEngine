@@ -18,7 +18,7 @@
                           << "========================================\n";\
                 PE_DEBUGBREAK();\
             }\
-        } while(0);
+        } while(0)
 #else 
     #define PE_ASSERT(condition, msg)
 #endif
