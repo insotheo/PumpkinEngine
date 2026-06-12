@@ -1,6 +1,6 @@
-#include "Application.h"
+#include "Core/Application.h"
 
-#include "Debug.h"
+#include "Core/Debug.h"
 
 namespace Pumpkin{
     Application* Application::s_AppInst = nullptr;
