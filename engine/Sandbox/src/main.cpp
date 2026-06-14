@@ -6,15 +6,6 @@ class SandboxApp : public Pumpkin::Application{
     public:
         SandboxApp(){
             //custom ctor
-
-            PE_LOG_INFO("Hello!");
-
-            Pumpkin::KeyPressedEvent e(Pumpkin::KeyCode::M);
-
-            Pumpkin::EventDispatcher dispatcher(e);
-            dispatcher.Dispatch<Pumpkin::KeyPressedEvent>([this](Pumpkin::KeyPressedEvent& ev){
-                std::cout << (char)ev.GetKeyCode() << "\n";
-            });
         }
 };
 

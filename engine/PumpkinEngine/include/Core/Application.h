@@ -8,6 +8,7 @@ namespace Pumpkin{
         virtual ~Application();
 
         void Run();
+        inline void Stop() { m_Running = false; }
         
         inline static Application& Get() { return *s_AppInst; }
     private:
