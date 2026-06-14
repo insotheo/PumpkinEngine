@@ -2,6 +2,7 @@
 #define PUMPKIN_ENGINE_WINDOW_EVENT_H
 
 #include "Event/Event.h"
+#include <cstdint>
 #include <format>
 
 namespace Pumpkin{
@@ -14,15 +15,15 @@ namespace Pumpkin{
 
     class WindowResize : public EventImpl<WindowResize>{
     public:
-        WindowResize(int width, int height) : m_Width(width), m_Height(height)
+        WindowResize(uint32_t width, uint32_t height) : m_Width(width), m_Height(height)
         {}
 
-        inline int GetWidth() const { return m_Width; }
-        inline int GetHeight() const { return m_Height; }
+        inline uint32_t GetWidth() const { return m_Width; }
+        inline uint32_t GetHeight() const { return m_Height; }
 
         inline std::string ToString() const override { return std::format("Window resize event({};{})", m_Width, m_Height); }
     private:
-        int m_Width, m_Height;
+        uint32_t m_Width, m_Height;
     };
 
 }

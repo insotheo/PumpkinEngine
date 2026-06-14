@@ -3,7 +3,7 @@
 
 class SandboxLayer : public Pumpkin::Layer{
     void OnUpdate(float dt) override{
-        PE_LOG_INFO("FPS: {}",  1/dt);
+        // PE_LOG_INFO("FPS: {}",  1/dt);
     }
 };
 

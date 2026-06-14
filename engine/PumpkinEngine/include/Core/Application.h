@@ -4,11 +4,18 @@
 #include "Core/Base.h"
 #include "Core/Layer.h"
 #include "Core/LayerStack.h"
+#include "Core/Window.h"
+#include <string>
 
 namespace Pumpkin{
+    struct ApplicationSpecification{
+        std::string Name = "Pumpkin App";
+        bool Headless = false;
+    };
+
     class Application{
     public:
-        Application();
+        explicit Application(const ApplicationSpecification& specification = ApplicationSpecification());
         virtual ~Application();
 
         void Run();
@@ -22,7 +29,12 @@ namespace Pumpkin{
     private:
         static Application* s_AppInst;
         
+        void OnEvent(Event& event);
+
+        ApplicationSpecification m_AppSpecification;
+
         LayerStack m_LayerStack;
+        Scope<Window> m_Window;
 
         bool m_Running;
     };
