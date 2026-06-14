@@ -3,6 +3,7 @@
 
 #include "Event/Event.h"
 #include "Core/KeyCode.h"
+#include <cstdint>
 #include <format>
 
 namespace Pumpkin{
@@ -54,7 +55,7 @@ namespace Pumpkin{
 
         inline MouseButtonCode GetMouseButton() const { return m_Btn; }
 
-        inline std::string ToString() const override { return std::format("Mouse button pressed event(code: {})", m_Btn); }
+        inline std::string ToString() const override { return std::format("Mouse button pressed event(code: {})", static_cast<uint8_t>(m_Btn)); }
 
     private:
         MouseButtonCode m_Btn;
@@ -67,7 +68,7 @@ namespace Pumpkin{
 
         inline MouseButtonCode GetMouseButton() const { return m_Btn; }
 
-        inline std::string ToString() const override { return std::format("Mouse button released event(code: {})", m_Btn); }
+        inline std::string ToString() const override { return std::format("Mouse button released event(code: {})", static_cast<uint8_t>(m_Btn)); }
 
     private:
         MouseButtonCode m_Btn;

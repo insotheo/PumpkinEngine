@@ -9,7 +9,7 @@ class SandboxApp : public Pumpkin::Application{
 
             PE_LOG_INFO("Hello!");
 
-            Pumpkin::KeyPressedEvent e(SDLK_AMPERSAND);
+            Pumpkin::KeyPressedEvent e(Pumpkin::KeyCode::M);
 
             Pumpkin::EventDispatcher dispatcher(e);
             dispatcher.Dispatch<Pumpkin::KeyPressedEvent>([this](Pumpkin::KeyPressedEvent& ev){
