@@ -1,18 +1,29 @@
 #include <PumpkinEngine.h>
+#include <Event/InputEvent.h>
+#include <Core/KeyCode.h>
 #include <Core/Layer.h>
+#include <Event/Event.h>
 
-class SandboxLayer : public Pumpkin::Layer{
-    void OnUpdate(float dt) override{
-        // PE_LOG_INFO("FPS: {}",  1/dt);
+using namespace Pumpkin;
+
+class SandboxLayer : public Layer{
+    void OnEvent(Event& event) override{
+        EventDispatcher inputDispatcher(event);
+
+        inputDispatcher.Dispatch<KeyReleasedEvent>([&](KeyReleasedEvent& e){
+            if(e.GetKeyCode() == KeyCode::Esc){
+                Application::Get().Stop();
+            }
+        });
     }
 };
 
-class SandboxApp : public Pumpkin::Application{
+class SandboxApp : public Application{
     public:
         SandboxApp(){
             //custom ctor
 
-            PushLayer(PE_MOVE_SCOPE(Pumpkin::CreateScope<SandboxLayer>()));
+            PushLayer(PE_MOVE_SCOPE(CreateScope<SandboxLayer>()));
         }
 };
 

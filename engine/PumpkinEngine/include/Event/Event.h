@@ -15,20 +15,20 @@ namespace Pumpkin{
         bool Handled = false;
     };
 
+    class EventTypeCounter{
+    public:
+        static uint32_t GetNextID();
+    };
+
     template<typename T>
     class EventImpl : public Event{
     public:
         static uint32_t GetStaticTypeID(){
-            static uint32_t s_TypeID = GetNextID();
+            static uint32_t s_TypeID = EventTypeCounter::GetNextID();
             return s_TypeID;
         }
 
         inline uint32_t GetTypeID() const override { return GetStaticTypeID(); }
-    private:
-        static uint32_t GetNextID(){
-            static uint32_t s_EventCounter = 0;
-            return s_EventCounter++;
-        }
     };
 
     class EventDispatcher{

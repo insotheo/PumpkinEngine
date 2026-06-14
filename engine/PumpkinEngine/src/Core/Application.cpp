@@ -3,6 +3,8 @@
 #include <SDL3/SDL.h>
 #include "Core/Debug.h"
 #include "Core/Window.h"
+#include "Event/Event.h"
+#include "Event/WindowEvent.h"
 
 namespace Pumpkin{
     Application* Application::s_AppInst = nullptr;
@@ -17,6 +19,9 @@ namespace Pumpkin{
             m_Window = CreateScope<Window>(WindowProps { .Title = m_AppSpecification.Name });
             m_Window->SetEventCallback([this](auto& event) { OnEvent(event); });
         }
+        else{
+            PE_ASSERT(false, "No headless mode yet");
+        }
     }
 
     Application::~Application(){}
@@ -27,12 +32,6 @@ namespace Pumpkin{
         float deltaTime = 1.0/60.0;
 
         while(m_Running){
-            //SDL events handling
-            SDL_Event sdlEvent;
-            while(SDL_PollEvent(&sdlEvent)){
-                
-            }
-
             //layers updating
             for(auto& layer : m_LayerStack)
                 layer->OnUpdate(deltaTime);
@@ -45,10 +44,20 @@ namespace Pumpkin{
 
                 m_Window->OnUpdate();
             }
+            else{ //headless
+                SDL_Delay(1);
+            }
         }
     }
 
     void Application::OnEvent(Event& event){
+        EventDispatcher dispatcher(event);
 
+        dispatcher.Dispatch<WindowCloseEvent>([this](WindowCloseEvent& closeEvent){ Stop(); });
+
+        for(auto it = m_LayerStack.end(); it != m_LayerStack.begin(); ){
+            (*--it)->OnEvent(event);
+            if(event.Handled) break;
+        }
     }
 }

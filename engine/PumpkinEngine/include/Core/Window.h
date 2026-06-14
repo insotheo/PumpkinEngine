@@ -34,6 +34,7 @@ namespace Pumpkin{
     private:
         void Init(const WindowProps& props);
         void Shutdown();
+        void EventUpdate();
 
         struct WindowData {
             std::string Title;

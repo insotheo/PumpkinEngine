@@ -7,15 +7,15 @@
 
 namespace Pumpkin{
 
-    class WindowClose : public EventImpl<WindowClose>{
+    class WindowCloseEvent : public EventImpl<WindowCloseEvent>{
     public:
         inline std::string ToString() const override { return "Window close event"; }
 
     };
 
-    class WindowResize : public EventImpl<WindowResize>{
+    class WindowResizeEvent : public EventImpl<WindowResizeEvent>{
     public:
-        WindowResize(uint32_t width, uint32_t height) : m_Width(width), m_Height(height)
+        WindowResizeEvent(uint32_t width, uint32_t height) : m_Width(width), m_Height(height)
         {}
 
         inline uint32_t GetWidth() const { return m_Width; }
