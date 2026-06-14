@@ -1,6 +1,8 @@
 #ifndef PUMPKIN_ENGINE_H
 #define PUMPKIN_ENGINE_H
 
+#include "Core/Base.h" // IWYU pragma: export
+
 #include "Core/EntryPoint.h" // IWYU pragma: export
 
 

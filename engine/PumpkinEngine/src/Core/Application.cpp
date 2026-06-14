@@ -17,6 +17,19 @@ namespace Pumpkin{
     void Application::Run(){
         m_Running = true;
 
-        while(m_Running);
+        float deltaTime = 1.0/60.0;
+
+        while(m_Running){
+
+            //layers updating
+            for(auto& layer : m_LayerStack){
+                layer->OnUpdate(deltaTime);
+            }
+
+            //layers rendering
+            for(auto& layer: m_LayerStack){
+                layer->OnRender();
+            }
+        }
     }
 }
