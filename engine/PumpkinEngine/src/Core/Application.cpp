@@ -7,6 +7,7 @@
 #include "Event/Event.h"
 #include "Event/WindowEvent.h"
 #include "Render/Renderer.h"
+#include "Render/Shader.h"
 
 namespace Pumpkin{
     Application* Application::s_AppInst = nullptr;
@@ -39,7 +40,10 @@ namespace Pumpkin{
 
         float deltaTime = 1.0/60.0;
 
-        Material triangleMat = m_Renderer->CreateMaterial("./test.vert.spv", "./test.frag.spv", 6 * sizeof(float));
+        Shader* shader = m_Renderer->CreateShader("test.vert.spv", "test.frag.spv");
+        
+        Material triangleMat;
+        triangleMat.ShaderRef = shader;
 
 
         //TEST TRIANGLE
@@ -57,7 +61,7 @@ namespace Pumpkin{
         };
 
         RenderObject triangle = m_Renderer->AllocateMesh(
-            vertices, sizeof(vertices), 3 * sizeof(float),
+            vertices, sizeof(vertices), 6 * sizeof(float),
             indices, sizeof(indices), SDL_GPU_INDEXELEMENTSIZE_16BIT
         );
 
@@ -86,7 +90,7 @@ namespace Pumpkin{
             }
         }
 
-        m_Renderer->DestroyMaterial(triangleMat);
+        m_Renderer->DestroyShader(shader);
     }
 
     void Application::OnEvent(Event& event){

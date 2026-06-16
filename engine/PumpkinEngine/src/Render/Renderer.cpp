@@ -62,6 +62,11 @@ namespace Pumpkin{
                 m_CurrentCmd = nullptr;
             }
 
+            for(auto& pair : m_PipelineCache){
+                SDL_ReleaseGPUGraphicsPipeline(m_Device, pair.second);
+            }
+            m_PipelineCache.clear();
+
             SDL_ReleaseWindowFromGPUDevice(m_Device, m_Window);
             SDL_DestroyGPUDevice(m_Device);
             m_Device = nullptr;
@@ -132,9 +137,12 @@ namespace Pumpkin{
     }
 
     void Renderer::DrawObject(const RenderObject& obj, const Material& mat){
-        if(!m_CurrentPass || !mat.Pipeline) return;
+        if(!m_CurrentPass || !mat.ShaderRef) return;
 
-        SDL_BindGPUGraphicsPipeline(m_CurrentPass, mat.Pipeline);
+        SDL_GPUGraphicsPipeline* pipeline = GetOrCreatePipeline(mat.ShaderRef, obj.VertexStride);
+        if(!pipeline) return;
+
+        SDL_BindGPUGraphicsPipeline(m_CurrentPass, pipeline);
 
         SDL_GPUBufferBinding vertexBind = {m_GlobVertexBuffer, obj.VertexOffsetBytes};
         SDL_BindGPUVertexBuffers(m_CurrentPass, 0, &vertexBind, 1);
