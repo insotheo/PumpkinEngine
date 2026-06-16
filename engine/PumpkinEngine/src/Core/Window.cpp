@@ -67,7 +67,7 @@ namespace Pumpkin{
                 WindowResizeEvent e(m_Data.Width, m_Data.Height);
                 m_Data.EventCallback(e);
             }
-            else if(sdlEvent.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED){
+            else if(sdlEvent.type == SDL_EVENT_QUIT || sdlEvent.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED){
                 WindowCloseEvent e;
                 m_Data.EventCallback(e);
             }
