@@ -5,6 +5,7 @@
 #include "Core/Layer.h"
 #include "Core/LayerStack.h"
 #include "Core/Window.h"
+#include "Renderer/Renderer.h"
 #include <string>
 
 namespace Pumpkin{
@@ -35,6 +36,7 @@ namespace Pumpkin{
 
         LayerStack m_LayerStack;
         Scope<Window> m_Window;
+        Scope<Renderer> m_Renderer;
 
         bool m_Running;
     };

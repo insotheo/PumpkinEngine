@@ -1,10 +1,12 @@
 #include "Core/Application.h"
 
 #include <SDL3/SDL.h>
+#include "Core/Base.h"
 #include "Core/Debug.h"
 #include "Core/Window.h"
 #include "Event/Event.h"
 #include "Event/WindowEvent.h"
+#include "Renderer/Renderer.h"
 
 namespace Pumpkin{
     Application* Application::s_AppInst = nullptr;
@@ -18,6 +20,12 @@ namespace Pumpkin{
         if(!m_AppSpecification.Headless){
             m_Window = CreateScope<Window>(WindowProps { .Title = m_AppSpecification.Name });
             m_Window->SetEventCallback([this](auto& event) { OnEvent(event); });
+            
+            m_Renderer = CreateScope<Renderer>();
+            if(!m_Renderer->Initialize(m_Window->GetNative())){
+                PE_ASSERT(false, "Failed to initialzie renderer");
+            }
+            m_Renderer->SetClearColor(0.7f, 0.5f, 0.3f);
         }
         else{
             PE_ASSERT(false, "No headless mode yet");
@@ -38,11 +46,15 @@ namespace Pumpkin{
 
             
             if(m_Window){
+                m_Window->OnUpdate(); //events
+
+                m_Renderer->Clear();
+
                 //layers rendering
                 for(auto& layer: m_LayerStack)
                     layer->OnRender();
-
-                m_Window->OnUpdate();
+        
+                m_Renderer->Present();
             }
             else{ //headless
                 SDL_Delay(1);
