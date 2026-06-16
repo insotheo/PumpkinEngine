@@ -3,7 +3,7 @@ project(PumpkinEngine VERSION 0.0.1 LANGUAGES CXX C)
 file(GLOB ENGINE_SOURCES
 src/Core/*.cpp
 src/Event/*.cpp
-src/Renderer/*.cpp
+src/Render/*.cpp
 )
 
 set(ENGINE_DEFINITIONS)

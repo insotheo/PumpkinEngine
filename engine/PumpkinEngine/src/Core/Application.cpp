@@ -6,7 +6,7 @@
 #include "Core/Window.h"
 #include "Event/Event.h"
 #include "Event/WindowEvent.h"
-#include "Renderer/Renderer.h"
+#include "Render/Renderer.h"
 
 namespace Pumpkin{
     Application* Application::s_AppInst = nullptr;
@@ -25,7 +25,7 @@ namespace Pumpkin{
             if(!m_Renderer->Initialize(m_Window->GetNative())){
                 PE_ASSERT(false, "Failed to initialzie renderer");
             }
-            m_Renderer->SetClearColor(0.7f, 0.5f, 0.3f);
+            m_Renderer->SetClearColor(1.f, 0.459f, 0.094f);
         }
         else{
             PE_ASSERT(false, "No headless mode yet");
@@ -39,6 +39,28 @@ namespace Pumpkin{
 
         float deltaTime = 1.0/60.0;
 
+        Material triangleMat = m_Renderer->CreateMaterial("./test.vert.spv", "./test.frag.spv", 6 * sizeof(float));
+
+
+        //TEST TRIANGLE
+        float vertices[] = 
+        {
+            //x            y             z          r       g           b
+            0.0f,   0.5f,   0.0f,   1.0f, 0.0f, 0.0f,   
+            -0.5f,  -0.5f,  0.0f,   0.0f,1.0f,0.0f,
+            0.5f,   -0.5f,  0.0f,0.0f, 0.0f, 1.0f,  
+        };
+
+        uint16_t indices[] = 
+        {
+            0u, 1u, 2u,
+        };
+
+        RenderObject triangle = m_Renderer->AllocateMesh(
+            vertices, sizeof(vertices), 3 * sizeof(float),
+            indices, sizeof(indices), SDL_GPU_INDEXELEMENTSIZE_16BIT
+        );
+
         while(m_Running){
             //layers updating
             for(auto& layer : m_LayerStack)
@@ -50,6 +72,9 @@ namespace Pumpkin{
 
                 m_Renderer->Clear();
 
+                //TEST
+                m_Renderer->DrawObject(triangle, triangleMat);
+
                 //layers rendering
                 for(auto& layer: m_LayerStack)
                     layer->OnRender();
@@ -60,6 +85,8 @@ namespace Pumpkin{
                 SDL_Delay(1);
             }
         }
+
+        m_Renderer->DestroyMaterial(triangleMat);
     }
 
     void Application::OnEvent(Event& event){
