@@ -41,18 +41,14 @@ namespace Pumpkin{
 
         float deltaTime = 1.0/60.0;
 
-        Shader* shader = m_Renderer->CreateShader(
-            "test.vert.spv",
-            "test.frag.spv",
-            VertexLayout{
-                VertexElement("inPos", PE_VERTEX_EL_FORMAT(FLOAT3)),
-                VertexElement("inColor", PE_VERTEX_EL_FORMAT(FLOAT3)),
-            }
+        Shader* shader = m_Renderer->CreateShader("test.vert", "test.frag", 
+        VertexLayout({
+            VertexElement("inPos", PE_VERTEX_EL_FORMAT(FLOAT3)),
+            VertexElement("inColor", PE_VERTEX_EL_FORMAT(FLOAT3))
+        })
         );
         
-        Material triangleMat;
-        triangleMat.ShaderRef = shader;
-
+        Material triangleMat(shader);
 
         //TEST TRIANGLE
         float vertices[] = 
@@ -62,13 +58,15 @@ namespace Pumpkin{
             -0.5f,  -0.5f,  0.0f,   0.0f,1.0f,0.0f,
             0.5f,   -0.5f,  0.0f,0.0f, 0.0f, 1.0f,  
         };
-
+        
         uint16_t indices[] = 
         {
             0u, 1u, 2u,
         };
 
-        Mesh triangle = m_Renderer->AllocateMesh(shader, vertices, indices);
+        triangleMat.SetFloat("xOff", 0.5f);
+
+        Mesh triangle = m_Renderer->AllocateMesh(vertices, indices);
 
         while(m_Running){
             //layers updating
@@ -95,7 +93,7 @@ namespace Pumpkin{
             }
         }
 
-        m_Renderer->DestroyShader(shader);
+        shader->Shutdown();
     }
 
     void Application::OnEvent(Event& event){

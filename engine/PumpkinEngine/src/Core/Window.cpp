@@ -26,7 +26,7 @@ namespace Pumpkin{
             m_Data.Title.c_str(),
             static_cast<int>(m_Data.Width),
             static_cast<int>(m_Data.Height),
-            SDL_WINDOW_RESIZABLE
+            SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
         );
 
         if(!m_Window){

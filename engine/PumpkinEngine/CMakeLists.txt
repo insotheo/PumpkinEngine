@@ -4,6 +4,7 @@ file(GLOB ENGINE_SOURCES
 src/Core/*.cpp
 src/Event/*.cpp
 src/Render/*.cpp
+src/Render/glad/gl.c
 )
 
 set(ENGINE_DEFINITIONS)

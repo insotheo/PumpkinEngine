@@ -21,6 +21,16 @@ namespace Pumpkin{
         inline uint32_t GetOffset() const { return m_Offset; }
         inline uint32_t GetLocation() const { return m_Location; }
 
+        inline uint32_t GetComponentCount() const {
+            switch(m_Format){
+                case SDL_GPU_VERTEXELEMENTFORMAT_FLOAT: return 1;
+                case SDL_GPU_VERTEXELEMENTFORMAT_FLOAT2: return 2;
+                case SDL_GPU_VERTEXELEMENTFORMAT_FLOAT3: return 3;
+                case SDL_GPU_VERTEXELEMENTFORMAT_FLOAT4: return 4;
+                default: return 0;
+            }
+        }
+
     private:
         std::string m_Name;
         SDL_GPUVertexElementFormat m_Format;
