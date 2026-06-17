@@ -8,6 +8,7 @@
 #include "Event/WindowEvent.h"
 #include "Render/Renderer.h"
 #include "Render/Shader.h"
+#include "Render/VertexLayout.h"
 
 namespace Pumpkin{
     Application* Application::s_AppInst = nullptr;
@@ -40,7 +41,14 @@ namespace Pumpkin{
 
         float deltaTime = 1.0/60.0;
 
-        Shader* shader = m_Renderer->CreateShader("test.vert.spv", "test.frag.spv");
+        Shader* shader = m_Renderer->CreateShader(
+            "test.vert.spv",
+            "test.frag.spv",
+            VertexLayout{
+                VertexElement("inPos", PE_VERTEX_EL_FORMAT(FLOAT3)),
+                VertexElement("inColor", PE_VERTEX_EL_FORMAT(FLOAT3)),
+            }
+        );
         
         Material triangleMat;
         triangleMat.ShaderRef = shader;
@@ -60,10 +68,7 @@ namespace Pumpkin{
             0u, 1u, 2u,
         };
 
-        RenderObject triangle = m_Renderer->AllocateMesh(
-            vertices, sizeof(vertices), 6 * sizeof(float),
-            indices, sizeof(indices), SDL_GPU_INDEXELEMENTSIZE_16BIT
-        );
+        Mesh triangle = m_Renderer->AllocateMesh(shader, vertices, indices);
 
         while(m_Running){
             //layers updating

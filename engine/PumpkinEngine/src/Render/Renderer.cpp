@@ -110,15 +110,14 @@ namespace Pumpkin{
         }
     }
 
-    RenderObject Renderer::AllocateMesh(
-        const void* vertexData, uint32_t vertexDataSize, uint32_t vertexStride,
+    Mesh Renderer::AllocateMeshRaw(
+        const void* vertexData, uint32_t vertexDataSize,
         const void* indexData, uint32_t indexDataSize, SDL_GPUIndexElementSize indexElementSize
     ){
         EnsureBufferCapacity(m_GlobVertexBuffer, m_CurrentVertexBufferSize, m_CurrentVertexOffsetBytes, vertexDataSize, SDL_GPU_BUFFERUSAGE_VERTEX);
         EnsureBufferCapacity(m_GlobIndexBuffer, m_CurrentIndexBufferSize, m_CurrentIndexOffsetBytes, indexDataSize, SDL_GPU_BUFFERUSAGE_INDEX);
 
-        RenderObject object;
-        object.VertexStride = vertexStride;
+        Mesh object;
         object.VertexOffsetBytes = m_CurrentVertexOffsetBytes;
         object.IndexOffsetBytes = m_CurrentIndexOffsetBytes;
         object.IndexElementSize = indexElementSize;
@@ -136,23 +135,23 @@ namespace Pumpkin{
         return object;
     }
 
-    void Renderer::DrawObject(const RenderObject& obj, const Material& mat){
+    void Renderer::DrawObject(const Mesh& mesh, const Material& mat){
         if(!m_CurrentPass || !mat.ShaderRef) return;
 
-        SDL_GPUGraphicsPipeline* pipeline = GetOrCreatePipeline(mat.ShaderRef, obj.VertexStride);
+        SDL_GPUGraphicsPipeline* pipeline = GetOrCreatePipeline(mat.ShaderRef);
         if(!pipeline) return;
 
         SDL_BindGPUGraphicsPipeline(m_CurrentPass, pipeline);
 
-        SDL_GPUBufferBinding vertexBind = {m_GlobVertexBuffer, obj.VertexOffsetBytes};
+        SDL_GPUBufferBinding vertexBind = {m_GlobVertexBuffer, mesh.VertexOffsetBytes};
         SDL_BindGPUVertexBuffers(m_CurrentPass, 0, &vertexBind, 1);
 
-        SDL_GPUBufferBinding indexBind = {m_GlobIndexBuffer, obj.IndexOffsetBytes};
-        SDL_BindGPUIndexBuffer(m_CurrentPass, &indexBind, obj.IndexElementSize);
+        SDL_GPUBufferBinding indexBind = {m_GlobIndexBuffer, mesh.IndexOffsetBytes};
+        SDL_BindGPUIndexBuffer(m_CurrentPass, &indexBind, mesh.IndexElementSize);
 
         SDL_DrawGPUIndexedPrimitives(
             m_CurrentPass,
-            obj.IndexCount,
+            mesh.IndexCount,
             1,
             0,
             0,

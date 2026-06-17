@@ -33,18 +33,19 @@ namespace Pumpkin{
         return SDL_CreateGPUShader(m_Device, &shaderInfo);
     }
 
-    Shader* Renderer::CreateShader(const std::string& vertPath, const std::string& fragPath){
+    Shader* Renderer::CreateShader(const std::string& vertPath, const std::string& fragPath, const VertexLayout& layout){
         SDL_GPUShader* vertShader = LoadShaderStage(vertPath, SDL_GPU_SHADERSTAGE_VERTEX);
         SDL_GPUShader* fragShader = LoadShaderStage(fragPath, SDL_GPU_SHADERSTAGE_FRAGMENT);
 
         if(!vertShader || !fragShader){
-            PE_ASSERT(false, "Failed to load shaders for material");
+            PE_ASSERT(false, "Failed to load shaders!");
             return nullptr;
         }
 
         Shader* shader = new Shader();
         shader->Vertex = vertShader;
         shader->Fragment = fragShader;
+        shader->Layout = layout;
 
         return shader;
     }
@@ -68,34 +69,30 @@ namespace Pumpkin{
         delete shader;
     }
 
-    SDL_GPUGraphicsPipeline* Renderer::GetOrCreatePipeline(Shader* shader, uint32_t vertexStride){
-        PipelineKey key = {shader, vertexStride};
+    SDL_GPUGraphicsPipeline* Renderer::GetOrCreatePipeline(Shader* shader){
+        PipelineKey key = {shader };
 
         auto it = m_PipelineCache.find(key);
         if(it != m_PipelineCache.end()){
             return it->second;
         }
 
-        //TODO: more flexible
-        SDL_GPUVertexAttribute attribs[2];
-        //float3 inPos
-        SDL_zero(attribs[0]);
-        attribs[0].location = 0;
-        attribs[0].buffer_slot = 0;
-        attribs[0].format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT3;
-        attribs[0].offset = 0;
+        const VertexLayout& layout = shader->Layout;
+        const auto& layoutElements = layout.GetElements();
 
-        //float3 inColor
-        SDL_zero(attribs[1]);
-        attribs[1].location = 1;
-        attribs[1].buffer_slot = 0;
-        attribs[1].format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT3;
-        attribs[1].offset = 3 * sizeof(float);
+        std::vector<SDL_GPUVertexAttribute> sdlAttribs(layoutElements.size());
+        for(size_t i = 0; i < layoutElements.size(); ++i){
+            SDL_zero(sdlAttribs[i]);
+            sdlAttribs[i].location = layoutElements[i].GetLocation();
+            sdlAttribs[i].buffer_slot = 0;
+            sdlAttribs[i].format = layoutElements[i].GetFormat();
+            sdlAttribs[i].offset = layoutElements[i].GetOffset();
+        }
 
         SDL_GPUVertexBufferDescription buffDesc;
         SDL_zero(buffDesc);
         buffDesc.slot = 0;
-        buffDesc.pitch = vertexStride;
+        buffDesc.pitch = layout.GetStride();
         buffDesc.input_rate = SDL_GPU_VERTEXINPUTRATE_VERTEX;
 
         SDL_GPUGraphicsPipelineCreateInfo pInfo;
@@ -103,8 +100,8 @@ namespace Pumpkin{
         pInfo.vertex_shader = shader->Vertex;
         pInfo.fragment_shader = shader->Fragment;
 
-        pInfo.vertex_input_state.vertex_attributes = attribs;
-        pInfo.vertex_input_state.num_vertex_attributes = 2;
+        pInfo.vertex_input_state.vertex_attributes = sdlAttribs.data();
+        pInfo.vertex_input_state.num_vertex_attributes = static_cast<uint32_t>(sdlAttribs.size());
         pInfo.vertex_input_state.vertex_buffer_descriptions = &buffDesc;
         pInfo.vertex_input_state.num_vertex_buffers = 1;
         pInfo.primitive_type = SDL_GPU_PRIMITIVETYPE_TRIANGLELIST;
