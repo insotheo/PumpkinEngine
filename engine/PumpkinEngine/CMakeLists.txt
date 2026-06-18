@@ -14,7 +14,13 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/libsdl-org/SDL
     GIT_TAG main
 )
+FetchContent_Declare(
+	glm
+	GIT_REPOSITORY	https://github.com/g-truc/glm.git
+	GIT_TAG 	0af55ccecd98d4e5a8d1fad7de25ba429d60e863 #refs/tags/1.0.1
+)
 FetchContent_MakeAvailable(SDL3)
+FetchContent_MakeAvailable(glm)
 
 if(WIN32)
     list(APPEND ENGINE_DEFINITIONS PE_WIN32)
@@ -27,7 +33,7 @@ PUBLIC include/
 )
 
 target_link_libraries(PumpkinEngine
-PUBLIC SDL3::SDL3)
+PUBLIC SDL3::SDL3 glm::glm)
 
 target_compile_definitions(PumpkinEngine
 PUBLIC ${ENGINE_DEFINITIONS} $<$<CONFIG:Debug>:PE_DEBUG> $<$<CONFIG:Release>:PE_RELEASE>

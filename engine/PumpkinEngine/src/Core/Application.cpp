@@ -8,7 +8,6 @@
 #include "Event/WindowEvent.h"
 #include "Render/Renderer.h"
 #include "Render/Shader.h"
-#include "Render/VertexLayout.h"
 
 namespace Pumpkin{
     Application* Application::s_AppInst = nullptr;
@@ -48,10 +47,10 @@ namespace Pumpkin{
         //TEST TRIANGLE
         float vertices[] = 
         {
-            //x            y             z          r       g           b
-            0.0f,   0.5f,   0.0f,   1.0f, 0.0f, 0.0f,   
-            -0.5f,  -0.5f,  0.0f,   0.0f,1.0f,0.0f,
-            0.5f,   -0.5f,  0.0f,0.0f, 0.0f, 1.0f,  
+                //x          y           r        g         b
+             0.0f,   1.0f,  1.0f, 0.0f, 0.0f,   
+            -1.0f,  -1.0f,  0.0f, 1.0f, 0.0f,
+            1.0f, -1.0f, 0.0f,0.0f,1.0f,  
         };
         
         uint16_t indices[] = 
@@ -59,14 +58,10 @@ namespace Pumpkin{
             0u, 1u, 2u,
         };
 
-        triangleMat.SetFloat("xOff", 0.5f);
+        triangleMat.SetFloat("u_XOff", 0.5f);
+        triangleMat.SetFloat("u_Scale", 0.25f);
 
-        Mesh triangle = m_Renderer->AllocateMesh(vertices, indices,
-            VertexLayout({
-                VertexElement("inPos", ShaderDataType::Float3),
-                VertexElement("inColor", ShaderDataType::Float3)
-            })
-        );
+        Mesh triangle = m_Renderer->AllocateMesh(vertices, indices, VertexLayoutType::Simple2D);
 
         while(m_Running){
             //layers updating

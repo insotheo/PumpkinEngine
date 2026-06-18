@@ -57,6 +57,34 @@ namespace Pumpkin{
             }
         }
 
+        inline GLenum GetOpenGLType() const {
+            switch(m_Type){
+                case ShaderDataType::Float:
+                case ShaderDataType::Float2:
+                case ShaderDataType::Float3:
+                case ShaderDataType::Float4:
+                    return GL_FLOAT;
+
+                case ShaderDataType::Int:
+                case ShaderDataType::Int2:
+                case ShaderDataType::Int3:
+                case ShaderDataType::Int4:
+                    return GL_INT;
+
+                case ShaderDataType::Bool:
+                    return GL_BOOL;
+
+                case ShaderDataType::Mat3:
+                case ShaderDataType::Mat4:
+                    return GL_MATRIX_STRIDE;
+
+                default:{
+                    PE_ASSERT(false, "Unknown shader data type!");
+                    return 0;
+                }
+            }
+        }
+
     private:
         std::string m_Name;
         ShaderDataType m_Type;
