@@ -43,8 +43,8 @@ namespace Pumpkin{
 
         Shader* shader = m_Renderer->CreateShader("test.vert", "test.frag", 
         VertexLayout({
-            VertexElement("inPos", PE_VERTEX_EL_FORMAT(FLOAT3)),
-            VertexElement("inColor", PE_VERTEX_EL_FORMAT(FLOAT3))
+            VertexElement("inPos", ShaderDataType::Float3),
+            VertexElement("inColor", ShaderDataType::Float3)
         })
         );
         

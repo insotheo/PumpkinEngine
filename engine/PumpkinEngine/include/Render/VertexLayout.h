@@ -1,39 +1,65 @@
 #ifndef PUMPKIN_ENGINE_VERTEX_LAYOUT_H
 #define PUMPKIN_ENGINE_VERTEX_LAYOUT_H
 
-#include <SDL3/SDL.h>
+#include "Core/Debug.h"
+#include "Render/glad/gl.h"
 #include <cstdint>
 #include <initializer_list>
 #include <vector>
 #include <string>
 
-#define PE_VERTEX_EL_FORMAT(identifier) SDL_GPU_VERTEXELEMENTFORMAT_##identifier
-
 namespace Pumpkin{
+    enum class ShaderDataType{
+        None = 0,
+        Float, Float2, Float3, Float4,
+        Int, Int2, Int3, Int4,
+        Mat3, Mat4,
+        Bool
+    };
+
     class VertexElement{
         friend class VertexLayout;
     public:
-        VertexElement(const std::string& name, SDL_GPUVertexElementFormat format) : m_Name(name), m_Format(format)
+        VertexElement(const std::string& name, ShaderDataType type) : m_Name(name), m_Type(type)
         {}
         
         inline const std::string& GetName() const { return m_Name; }
-        inline SDL_GPUVertexElementFormat GetFormat() const { return m_Format; }
+        inline ShaderDataType GetType() const { return m_Type; }
         inline uint32_t GetOffset() const { return m_Offset; }
         inline uint32_t GetLocation() const { return m_Location; }
 
         inline uint32_t GetComponentCount() const {
-            switch(m_Format){
-                case SDL_GPU_VERTEXELEMENTFORMAT_FLOAT: return 1;
-                case SDL_GPU_VERTEXELEMENTFORMAT_FLOAT2: return 2;
-                case SDL_GPU_VERTEXELEMENTFORMAT_FLOAT3: return 3;
-                case SDL_GPU_VERTEXELEMENTFORMAT_FLOAT4: return 4;
-                default: return 0;
+            switch(m_Type){
+                case ShaderDataType::Float:
+                case ShaderDataType::Int:
+                case ShaderDataType::Bool:
+                    return 1;
+                
+                case ShaderDataType::Float2:
+                case ShaderDataType::Int2:
+                    return 2;
+
+                case ShaderDataType::Float3:
+                case ShaderDataType::Int3:
+                    return 3;
+
+                case ShaderDataType::Float4:
+                case ShaderDataType::Int4:
+                    return 4;
+
+                case ShaderDataType::Mat3: return 3 * 3;
+                case ShaderDataType::Mat4: return 4 * 4;
+
+                default:{
+                    PE_ASSERT(false, "Unknown shader data type!");
+                    return 0;
+                }
             }
         }
 
     private:
         std::string m_Name;
-        SDL_GPUVertexElementFormat m_Format;
+        ShaderDataType m_Type;
         uint32_t m_Offset;
         uint32_t m_Location;
     };
@@ -47,41 +73,34 @@ namespace Pumpkin{
         inline uint32_t GetStride() const { return m_Stride; } 
 
     private:
-        static uint32_t GetFormatSize(SDL_GPUVertexElementFormat format){
-            switch(format){
-                case SDL_GPU_VERTEXELEMENTFORMAT_INT: return 4;
-                case SDL_GPU_VERTEXELEMENTFORMAT_INT2: return 4 * 2;
-                case SDL_GPU_VERTEXELEMENTFORMAT_INT3: return 4 * 3;
-                case SDL_GPU_VERTEXELEMENTFORMAT_INT4: return 4 * 4;
+        static uint32_t GetTypeSize(ShaderDataType type){
+            switch(type){
+                case ShaderDataType::Bool: return 1;
 
-                case SDL_GPU_VERTEXELEMENTFORMAT_UINT: return 4;
-                case SDL_GPU_VERTEXELEMENTFORMAT_UINT2: return 4 * 2;
-                case SDL_GPU_VERTEXELEMENTFORMAT_UINT3: return 4 * 3;
-                case SDL_GPU_VERTEXELEMENTFORMAT_UINT4: return 4 * 4;
-                
-                case SDL_GPU_VERTEXELEMENTFORMAT_FLOAT: return 4;
-                case SDL_GPU_VERTEXELEMENTFORMAT_FLOAT2: return 4 * 2;
-                case SDL_GPU_VERTEXELEMENTFORMAT_FLOAT3: return 4 * 3;
-                case SDL_GPU_VERTEXELEMENTFORMAT_FLOAT4: return 4 * 4;
-                
-                case SDL_GPU_VERTEXELEMENTFORMAT_BYTE2: return 1 * 2;
-                case SDL_GPU_VERTEXELEMENTFORMAT_BYTE4: return 1 * 4;
+                case ShaderDataType::Float:
+                case ShaderDataType::Int:
+                    return 4;
 
-                case SDL_GPU_VERTEXELEMENTFORMAT_UBYTE2: return 1 * 2;
-                case SDL_GPU_VERTEXELEMENTFORMAT_UBYTE4: return 1 * 4;
-                
-                case SDL_GPU_VERTEXELEMENTFORMAT_SHORT2: return 2 * 2;
-                case SDL_GPU_VERTEXELEMENTFORMAT_SHORT4: return 2 * 4;                
-                
-                case SDL_GPU_VERTEXELEMENTFORMAT_USHORT2: return 2 * 2;
-                case SDL_GPU_VERTEXELEMENTFORMAT_USHORT4: return 2 * 4;
+                case ShaderDataType::Float2:
+                case ShaderDataType::Int2:
+                    return 4 * 2;
+                    
+                case ShaderDataType::Float3:
+                case ShaderDataType::Int3:
+                    return 4 * 3;
 
-                case SDL_GPU_VERTEXELEMENTFORMAT_HALF2: return 4;
-                case SDL_GPU_VERTEXELEMENTFORMAT_HALF4: return 8;
+                case ShaderDataType::Float4:
+                case ShaderDataType::Int4:
+                    return 4 * 4;
 
-                default: return 0;
+                case ShaderDataType::Mat3: return 3 * 3 * 4;
+                case ShaderDataType::Mat4: return 4 * 4 * 4;
+
+                default:{
+                    PE_ASSERT(false, "Unknown shader data type!");
+                    return 0;
+                }
             }
-            return 0;
         }
         
         std::vector<VertexElement> m_Elements;

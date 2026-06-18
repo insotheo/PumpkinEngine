@@ -9,7 +9,7 @@ namespace Pumpkin{
             el.m_Offset = currentOffset;
             el.m_Location = currentLocation;
 
-            uint32_t size = GetFormatSize(el.GetFormat());
+            uint32_t size = GetTypeSize(el.GetType());
             currentOffset += size;
             currentLocation++;
         }
