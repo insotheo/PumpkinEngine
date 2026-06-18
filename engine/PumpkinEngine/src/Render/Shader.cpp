@@ -1,6 +1,7 @@
 #include "Render/Shader.h"
 
 #include "Core/Log.h"
+#include <vector>
 #include <fstream>
 #include <sstream>
 
@@ -50,7 +51,7 @@ namespace Pumpkin{
         return shaderID;
     }
 
-    bool Shader::LoadFromFile(const std::string& vertexPath, const std::string& fragmentPath, const VertexLayout& layout){
+    bool Shader::LoadFromFile(const std::string& vertexPath, const std::string& fragmentPath){
         std::string vertexSource = ReadFile(vertexPath);
         std::string fragmentSource = ReadFile(fragmentPath);
 
@@ -77,7 +78,6 @@ namespace Pumpkin{
         glDeleteShader(vertexShader);
         glDeleteShader(fragmentShader);
 
-        Layout = layout;
         return ProgramID;
     }
 }

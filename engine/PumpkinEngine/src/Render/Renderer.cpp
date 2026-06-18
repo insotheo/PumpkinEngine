@@ -42,7 +42,7 @@ namespace Pumpkin{
     }
 
     Mesh Renderer::AllocateMeshRaw(
-        const void* vertexData, uint32_t vertexDataSize,
+        const void* vertexData, uint32_t vertexDataSize, const VertexLayout& layout,
         const void* indexData, uint32_t indexDataSize, uint32_t indexCount
     ){
         Mesh mesh;
@@ -62,13 +62,25 @@ namespace Pumpkin{
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.EBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexDataSize, indexData, GL_STATIC_DRAW);
 
+        for(const auto& el : layout.GetElements()){
+            glEnableVertexAttribArray(el.GetLocation());
+            glVertexAttribPointer(
+                el.GetLocation(),
+                el.GetComponentCount(),
+                GL_FLOAT,
+                GL_FALSE,
+                layout.GetStride(),
+                (void*)(uintptr_t)el.GetOffset()
+            );
+        }
+
         glBindVertexArray(0);
         return mesh;
     }
 
-    Shader* Renderer::CreateShader(const std::string& vertPath, const std::string& fragPath, const VertexLayout& layout){
+    Shader* Renderer::CreateShader(const std::string& vertPath, const std::string& fragPath){
         Shader* shader = new Shader();
-        if(!shader->LoadFromFile(vertPath, fragPath, layout)){
+        if(!shader->LoadFromFile(vertPath, fragPath)){
             delete shader;
             return nullptr;
         }
@@ -83,19 +95,6 @@ namespace Pumpkin{
         glUseProgram(shader->ProgramID);
 
         glBindVertexArray(mesh.VAO);
-
-        glBindBuffer(GL_ARRAY_BUFFER, mesh.VBO);
-        for(const auto& el : shader->Layout.GetElements()){
-            glEnableVertexAttribArray(el.GetLocation());
-            glVertexAttribPointer(
-                el.GetLocation(),
-                el.GetComponentCount(),
-                GL_FLOAT,
-                GL_FALSE,
-                shader->Layout.GetStride(),
-                (void*)(uintptr_t)el.GetOffset()
-            );
-        }
 
         mat.ApplyUniforms();
 

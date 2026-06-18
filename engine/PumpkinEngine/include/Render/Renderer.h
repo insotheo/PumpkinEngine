@@ -2,6 +2,7 @@
 #define PUMPKIN_ENGINE_RENDERER_H
 
 #include <SDL3/SDL.h>
+#include "Render/VertexLayout.h"
 #include "Render/glad/gl.h"
 #include <cstdint>
 #include "Render/Mesh.h"
@@ -24,22 +25,23 @@ namespace Pumpkin{
         template<typename VertexType, typename IndexType, size_t VertexCount, size_t IndexCount>
         inline Mesh AllocateMesh(
             const VertexType (&vertexArray)[VertexCount],
-            const IndexType (&indexArray)[IndexCount]
+            const IndexType (&indexArray)[IndexCount],
+            const VertexLayout& layout
         )
         {
             return AllocateMeshRaw(
-                vertexArray, static_cast<uint32_t>(VertexCount * sizeof(VertexType)),
+                vertexArray, static_cast<uint32_t>(VertexCount * sizeof(VertexType)), layout,
                 indexArray, static_cast<uint32_t>(IndexCount * sizeof(IndexType)), static_cast<uint32_t>(IndexCount)
             );
         }
 
-        Shader* CreateShader(const std::string& vertPath, const std::string& fragPath, const VertexLayout& layout);
+        Shader* CreateShader(const std::string& vertPath, const std::string& fragPath);
 
         void DrawObject(const Mesh& mesh, const Material& mat);
 
     private:
         Mesh AllocateMeshRaw(
-            const void* vertexData, uint32_t vertexDataSize,
+            const void* vertexData, uint32_t vertexDataSize, const VertexLayout& layout,
             const void* indexData, uint32_t indexDataSize, uint32_t indexCount
         );
 

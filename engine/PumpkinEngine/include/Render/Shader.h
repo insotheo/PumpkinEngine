@@ -3,8 +3,8 @@
 
 #include <SDL3/SDL.h>
 #include <cstdint>
+#include <string>
 #include "Render/glad/gl.h"
-#include "Render/VertexLayout.h"
 
 namespace Pumpkin{
     class Shader{
@@ -12,11 +12,10 @@ namespace Pumpkin{
         Shader() = default;
         ~Shader();
 
-        bool LoadFromFile(const std::string& vertexPath, const std::string& fragmentPath, const VertexLayout& layout);
+        bool LoadFromFile(const std::string& vertexPath, const std::string& fragmentPath);
         void Shutdown();
 
         uint32_t ProgramID = 0;
-        VertexLayout Layout;
 
     private:
         std::string ReadFile(const std::string& path);

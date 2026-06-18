@@ -41,12 +41,7 @@ namespace Pumpkin{
 
         float deltaTime = 1.0/60.0;
 
-        Shader* shader = m_Renderer->CreateShader("test.vert", "test.frag", 
-        VertexLayout({
-            VertexElement("inPos", ShaderDataType::Float3),
-            VertexElement("inColor", ShaderDataType::Float3)
-        })
-        );
+        Shader* shader = m_Renderer->CreateShader("test.vert", "test.frag");
         
         Material triangleMat(shader);
 
@@ -66,7 +61,12 @@ namespace Pumpkin{
 
         triangleMat.SetFloat("xOff", 0.5f);
 
-        Mesh triangle = m_Renderer->AllocateMesh(vertices, indices);
+        Mesh triangle = m_Renderer->AllocateMesh(vertices, indices,
+            VertexLayout({
+                VertexElement("inPos", ShaderDataType::Float3),
+                VertexElement("inColor", ShaderDataType::Float3)
+            })
+        );
 
         while(m_Running){
             //layers updating
