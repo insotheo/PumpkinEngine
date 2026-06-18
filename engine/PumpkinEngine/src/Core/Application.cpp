@@ -1,6 +1,7 @@
 #include "Core/Application.h"
 
 #include <SDL3/SDL.h>
+#include <chrono>
 #include "Core/Base.h"
 #include "Core/Debug.h"
 #include "Core/Window.h"
@@ -23,7 +24,7 @@ namespace Pumpkin{
             m_Window->SetEventCallback([this](auto& event) { OnEvent(event); });
             
             m_Renderer = CreateScope<Renderer>();
-            if(!m_Renderer->Initialize(m_Window->GetNative())){
+            if(!m_Renderer->Initialize(m_Window.get())){
                 PE_ASSERT(false, "Failed to initialzie renderer");
             }
             m_Renderer->SetClearColor(1.f, 0.459f, 0.094f);
@@ -37,8 +38,7 @@ namespace Pumpkin{
 
     void Application::Run(){
         m_Running = true;
-
-        float deltaTime = 1.0/60.0;
+        auto lastTime = std::chrono::high_resolution_clock::now();
 
         Shader* shader = m_Renderer->CreateShader("test.vert", "test.frag");
         
@@ -64,6 +64,11 @@ namespace Pumpkin{
         Mesh triangle = m_Renderer->AllocateMesh(vertices, indices, VertexLayoutType::Simple2D);
 
         while(m_Running){
+            auto currentTime = std::chrono::high_resolution_clock::now();
+            float deltaTime = std::chrono::duration<float>(currentTime - lastTime).count();
+            lastTime = currentTime;
+            if(deltaTime > 0.1) deltaTime = 0.1;
+
             //layers updating
             for(auto& layer : m_LayerStack)
                 layer->OnUpdate(deltaTime);

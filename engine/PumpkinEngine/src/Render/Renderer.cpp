@@ -22,9 +22,9 @@ namespace Pumpkin{
         Shutdown();
     }
 
-    bool Renderer::Initialize(SDL_Window* nativeWindow){
-        if(!nativeWindow) return false;
-        m_Window = nativeWindow;
+    bool Renderer::Initialize(Window* window){
+        if(!window || !(window->GetNative())) return false;
+        m_Window = window->GetNative();
 
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
@@ -40,6 +40,8 @@ namespace Pumpkin{
             PE_LOG_ERROR("OpenGL: Failed to initialize GLAD!");
             return false;
         }
+
+        window->SetVSync(window->GetVSync());
 
         glEnable(GL_DEPTH_TEST);
 

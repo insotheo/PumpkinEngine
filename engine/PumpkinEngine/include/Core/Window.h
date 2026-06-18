@@ -13,6 +13,7 @@ namespace Pumpkin{
         std::string Title = "PumpkinEngine's Window";
         uint32_t Width = 800;
         uint32_t Height = 600;
+        bool VSync = true;
     };
 
     class Window{
@@ -27,6 +28,9 @@ namespace Pumpkin{
         inline uint32_t GetWidth() const { return m_Data.Width; };
         inline uint32_t GetHeight() const { return m_Data.Height; };
 
+        inline bool GetVSync() const { return m_Data.VSync; }
+        void SetVSync(bool state);
+
         inline void SetEventCallback(const EventCallbackFn& callback) { m_Data.EventCallback = callback; }
 
         inline SDL_Window* GetNative() const { return m_Window; }
@@ -40,6 +44,7 @@ namespace Pumpkin{
             std::string Title;
             uint32_t Width;
             uint32_t Height;
+            bool VSync;
             EventCallbackFn EventCallback;
         };
 

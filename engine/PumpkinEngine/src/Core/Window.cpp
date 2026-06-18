@@ -5,6 +5,7 @@
 #include "Core/KeyCode.h"
 #include "Event/InputEvent.h"
 #include "Event/WindowEvent.h"
+#include "SDL3/SDL_video.h"
 
 namespace Pumpkin{
     Window::Window(const WindowProps& props) { Init(props); }
@@ -14,6 +15,7 @@ namespace Pumpkin{
         m_Data.Width = props.Width;
         m_Data.Height = props.Height;
         m_Data.Title = props.Title;
+        m_Data.VSync = props.VSync;
 
         if(!SDL_WasInit(SDL_INIT_VIDEO)){
             if(!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)){
@@ -105,5 +107,10 @@ namespace Pumpkin{
             }
 
         }
+    }
+
+    void Window::SetVSync(bool state){
+        m_Data.VSync = state;
+        SDL_GL_SetSwapInterval(state ? 1 : 0);
     }
 }

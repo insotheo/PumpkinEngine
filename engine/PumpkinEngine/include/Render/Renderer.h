@@ -2,8 +2,9 @@
 #define PUMPKIN_ENGINE_RENDERER_H
 
 #include <SDL3/SDL.h>
-#include "Render/glad/gl.h"
 #include <cstdint>
+#include "Render/glad/gl.h"
+#include "Core/Window.h"
 #include "Render/Mesh.h"
 #include "Render/Shader.h"
 #include "Render/Material.h"
@@ -20,7 +21,7 @@ namespace Pumpkin{
         Renderer() = default;
         ~Renderer();
 
-        bool Initialize(SDL_Window* nativeWindow);
+        bool Initialize(Window* window);
         void Shutdown();
         inline void SetClearColor(float r, float g, float b, float a = 1.0f) { glClearColor(r, g, b, a); }
         inline void Clear() { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
