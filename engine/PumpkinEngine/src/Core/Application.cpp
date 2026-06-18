@@ -58,8 +58,8 @@ namespace Pumpkin{
             0u, 1u, 2u,
         };
 
-        triangleMat.SetFloat("u_XOff", 0.5f);
-        triangleMat.SetFloat("u_Scale", 0.25f);
+        triangleMat.SetFloat("u_Scale", 0.5f);
+        triangleMat.SetVec2("u_Offset", glm::vec2{0.5f, 0.5f});
 
         Mesh triangle = m_Renderer->AllocateMesh(vertices, indices, VertexLayoutType::Simple2D);
 

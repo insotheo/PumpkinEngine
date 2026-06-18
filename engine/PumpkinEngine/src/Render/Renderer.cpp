@@ -172,8 +172,8 @@ namespace Pumpkin{
 
         if(!shader || mesh.IndexCount == 0) return;
 
-        glUseProgram(shader->ProgramID);
-        mat.ApplyUniforms();
+        glUseProgram(shader->GetProgramID());
+        mat.Bind();
 
         uint32_t vao = m_BuffersBlocks[mesh.BlockIndex].VAOs[static_cast<size_t>(mesh.Type)];
         glBindVertexArray(vao);

@@ -1,6 +1,7 @@
 #include "Render/Shader.h"
 
 #include "Core/Log.h"
+#include <cstdint>
 #include <vector>
 #include <fstream>
 #include <sstream>
@@ -9,10 +10,11 @@ namespace Pumpkin{
     Shader::~Shader() { Shutdown(); }
 
     void Shader::Shutdown(){
-        if(ProgramID != 0){
-            glDeleteProgram(ProgramID);
-            ProgramID = 0;
+        if(m_ProgramID != 0){
+            glDeleteProgram(m_ProgramID);
+            m_ProgramID = 0;
         }
+        m_MaterialUniforms.clear();
     }
 
     std::string Shader::ReadFile(const std::string& path){
@@ -58,18 +60,18 @@ namespace Pumpkin{
         uint32_t vertexShader = CompileStage(vertexSource, GL_VERTEX_SHADER);
         uint32_t fragmentShader = CompileStage(fragmentSource, GL_FRAGMENT_SHADER);
 
-        ProgramID = glCreateProgram();
-        glAttachShader(ProgramID, vertexShader);
-        glAttachShader(ProgramID, fragmentShader);
-        glLinkProgram(ProgramID);
+        m_ProgramID = glCreateProgram();
+        glAttachShader(m_ProgramID, vertexShader);
+        glAttachShader(m_ProgramID, fragmentShader);
+        glLinkProgram(m_ProgramID);
 
         int success;
-        glGetProgramiv(ProgramID, GL_LINK_STATUS, &success);
+        glGetProgramiv(m_ProgramID, GL_LINK_STATUS, &success);
         if(!success){
             int logLength;
-            glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &logLength);
+            glGetProgramiv(m_ProgramID, GL_INFO_LOG_LENGTH, &logLength);
             std::vector<char> infoLog(logLength);
-            glGetProgramInfoLog(ProgramID, logLength, nullptr, infoLog.data());
+            glGetProgramInfoLog(m_ProgramID, logLength, nullptr, infoLog.data());
             PE_LOG_ERROR("Shader: Linking failed!\n{}", infoLog.data());
             Shutdown();
             return 0;
@@ -78,6 +80,45 @@ namespace Pumpkin{
         glDeleteShader(vertexShader);
         glDeleteShader(fragmentShader);
 
-        return ProgramID;
+        ReflectMaterialBlock();
+
+        return m_ProgramID;
+    }
+
+    void Shader::ReflectMaterialBlock(){
+        uint32_t blockIdx = glGetUniformBlockIndex(m_ProgramID, "Material");
+        if(blockIdx == GL_INVALID_INDEX) return;
+
+        glGetActiveUniformBlockiv(m_ProgramID, blockIdx, GL_UNIFORM_BLOCK_DATA_SIZE, (int*)&m_MaterialBufferSize);
+
+        int uniformCount = 0;
+        glGetActiveUniformBlockiv(m_ProgramID, blockIdx, GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS, &uniformCount);
+        
+        std::vector<int> uniformIndices(uniformCount);
+        glGetActiveUniformBlockiv(m_ProgramID, blockIdx, GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES, uniformIndices.data());
+        
+        std::vector<int> offsets(uniformCount);
+        glGetActiveUniformsiv(m_ProgramID, uniformCount, (uint32_t*)uniformIndices.data(), GL_UNIFORM_OFFSET, offsets.data());
+        
+        std::vector<int> sizes(uniformCount);
+        glGetActiveUniformsiv(m_ProgramID, uniformCount, (uint32_t*)uniformIndices.data(), GL_UNIFORM_SIZE, sizes.data());
+
+        for(int i = 0; i < uniformCount; ++i){
+            char name[256];
+            GLsizei length;
+            glGetActiveUniformName(m_ProgramID, uniformIndices[i], sizeof(name), &length, name);
+
+            std::string uniformName(name);
+            size_t dotPos = uniformName.find('.');
+            if(dotPos != std::string::npos){
+                uniformName = uniformName.substr(dotPos + 1);
+            }
+
+            UniformInfo info;
+            info.Offset = static_cast<uint32_t>(offsets[i]);
+            info.Size = static_cast<uint32_t>(sizes[i]);
+
+            m_MaterialUniforms[uniformName] = info;
+        }
     }
 }
