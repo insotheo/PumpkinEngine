@@ -4,11 +4,12 @@
 #include <cstdint>
 #include <glm/gtc/type_ptr.hpp>
 
-#define GEN_MATERIAL_SET_FN(MethodName, ArgDataType, DataType, ValForm)\
+#define GEN_MATERIAL_SET_FN(MethodName, ArgDataType, DataType, ValForm, HandleCreation)\
     void Material::Set##MethodName(const std::string& name, ArgDataType val){\
         if(!m_UniformsInfo) return;\
         auto it = m_UniformsInfo->find(name);\
         if(it != m_UniformsInfo->end()){\
+            HandleCreation;\
             std::memcpy(m_CpuBuffer.data() + it->second.Offset, ValForm, sizeof(DataType));\
         }\
     }
@@ -18,7 +19,7 @@ namespace Pumpkin{
     {
         if(m_ShaderRef){
             m_UniformsInfo = m_ShaderRef->GetMaterialUniformsPtr();
-            
+
             uint32_t rawSize = m_ShaderRef->GetMaterialBufferSize();
             uint32_t alignedSize = (rawSize + 15) & ~15;
 
@@ -42,6 +43,7 @@ namespace Pumpkin{
         glBindBufferBase(GL_UNIFORM_BUFFER, bindingSlot, m_UBO);
     }
 
-    GEN_MATERIAL_SET_FN(Float, float, float, &val)
-    GEN_MATERIAL_SET_FN(Vec2, const glm::vec2&, glm::vec2, glm::value_ptr(val))
+    GEN_MATERIAL_SET_FN(Float, float, float, &val, )
+    GEN_MATERIAL_SET_FN(Vec2, const glm::vec2&, glm::vec2, glm::value_ptr(val), )
+    GEN_MATERIAL_SET_FN(Texture, const Texture*, uint64_t, &handle, uint64_t handle = val->GetHandle())
 }

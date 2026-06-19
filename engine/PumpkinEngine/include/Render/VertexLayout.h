@@ -2,7 +2,7 @@
 #define PUMPKIN_ENGINE_VERTEX_LAYOUT_H
 
 #include "Core/Debug.h"
-#include "Render/glad/gl.h"
+#include "Thirdparty/glad/gl.h"
 #include <cstdint>
 #include <initializer_list>
 #include <vector>

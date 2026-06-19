@@ -9,16 +9,6 @@ namespace Pumpkin{
         Simple2D = 0,
         Default3D = 1,
     };
-    
-    struct Vertex2D{
-        glm::vec2 Position;
-        glm::vec3 Color;
-    };
-
-    struct Vertex3D{
-        glm::vec3 Position;
-        glm::vec2 TexCoord;
-    };
 }
 
 #endif

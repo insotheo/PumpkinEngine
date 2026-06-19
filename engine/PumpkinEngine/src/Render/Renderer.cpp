@@ -8,7 +8,7 @@ namespace Pumpkin{
         //2d
         {{
             {"Position", ShaderDataType::Float2},
-            {"Color", ShaderDataType::Float3}
+            {"UV", ShaderDataType::Float2}
         }},
 
         //3d

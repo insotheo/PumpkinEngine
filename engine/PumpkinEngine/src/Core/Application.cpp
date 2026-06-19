@@ -9,6 +9,7 @@
 #include "Event/WindowEvent.h"
 #include "Render/Renderer.h"
 #include "Render/Shader.h"
+#include "Render/Texture.h"
 
 namespace Pumpkin{
     Application* Application::s_AppInst = nullptr;
@@ -41,25 +42,29 @@ namespace Pumpkin{
         auto lastTime = std::chrono::high_resolution_clock::now();
 
         Shader* shader = m_Renderer->CreateShader("test.vert", "test.frag");
+        Texture* texture = new Texture("myCat.jpg");
         
         Material triangleMat(shader);
 
         //TEST TRIANGLE
         float vertices[] = 
         {
-                //x          y           r        g         b
-             0.0f,   1.0f,  1.0f, 0.0f, 0.0f,   
-            -1.0f,  -1.0f,  0.0f, 1.0f, 0.0f,
-            1.0f, -1.0f, 0.0f,0.0f,1.0f,  
+                //x          y          u         v       
+            -1.0f,  1.0f,  0.0f, 0.0f,
+            -1.0f, -1.0f,  0.0f, 1.0f,
+             1.0f, -1.0f, 1.0f,1.0f,
+            1.0f, 1.0f, 1.0f,0.0f
         };
         
         uint16_t indices[] = 
         {
             0u, 1u, 2u,
+            2u, 3u, 0u
         };
 
         triangleMat.SetFloat("u_Scale", 0.5f);
         triangleMat.SetVec2("u_Offset", glm::vec2{0.5f, 0.5f});
+        triangleMat.SetTexture("u_Texture", texture);
 
         Mesh triangle = m_Renderer->AllocateMesh(vertices, indices, VertexLayoutType::Simple2D);
 
@@ -94,6 +99,7 @@ namespace Pumpkin{
         }
 
         shader->Shutdown();
+        delete texture;
     }
 
     void Application::OnEvent(Event& event){

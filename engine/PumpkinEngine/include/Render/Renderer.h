@@ -3,7 +3,7 @@
 
 #include <SDL3/SDL.h>
 #include <cstdint>
-#include "Render/glad/gl.h"
+#include "Thirdparty/glad/gl.h"
 #include "Core/Window.h"
 #include "Render/Mesh.h"
 #include "Render/Shader.h"

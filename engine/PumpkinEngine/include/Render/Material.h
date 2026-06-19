@@ -2,7 +2,8 @@
 #define PUMPKIN_ENGINE_MATERIAL_H
 
 #include "Render/Shader.h"
-#include "Render/glad/gl.h"
+#include "Thirdparty/glad/gl.h"
+#include "Render/Texture.h"
 #include <glm/glm.hpp>
 #include <string>
 #include <vector>
@@ -18,6 +19,7 @@ namespace Pumpkin{
 
         void SetFloat(const std::string& name, float val);
         void SetVec2(const std::string& name, const glm::vec2& val);
+        void SetTexture(const std::string& name, const Texture* val);
 
         void Bind(uint32_t bindingSlot = 1) const;
 
