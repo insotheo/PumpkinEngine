@@ -1,11 +1,13 @@
 #include "Core/Window.h"
 
+#include "Thirdparty/glad/gl.h"
 #include "Core/Debug.h"
 #include "Core/Log.h"
 #include "Core/KeyCode.h"
 #include "Event/InputEvent.h"
 #include "Event/WindowEvent.h"
 #include "SDL3/SDL_video.h"
+#include "Core/Input.h"
 
 namespace Pumpkin{
     Window::Window(const WindowProps& props) { Init(props); }
@@ -65,6 +67,7 @@ namespace Pumpkin{
             if(sdlEvent.type == SDL_EVENT_WINDOW_RESIZED){
                 m_Data.Width = sdlEvent.window.data1;
                 m_Data.Height = sdlEvent.window.data2;
+                glViewport(0, 0, m_Data.Width, m_Data.Height);
 
                 WindowResizeEvent e(m_Data.Width, m_Data.Height);
                 m_Data.EventCallback(e);
@@ -77,11 +80,17 @@ namespace Pumpkin{
             //keyboard
             else if(sdlEvent.type == SDL_EVENT_KEY_DOWN){
                 KeyCode key = static_cast<KeyCode>(sdlEvent.key.scancode);
+                Input::SetKeyPressed(key, true);
+                Input::SetKeyReleased(key, false);
+                
                 KeyPressedEvent e(key);
                 m_Data.EventCallback(e);
             }
             else if(sdlEvent.type == SDL_EVENT_KEY_UP){
                 KeyCode key = static_cast<KeyCode>(sdlEvent.key.scancode);
+                Input::SetKeyPressed(key, false);
+                Input::SetKeyReleased(key, true);
+
                 KeyReleasedEvent e(key);
                 m_Data.EventCallback(e);
             }
@@ -89,20 +98,30 @@ namespace Pumpkin{
             //mouse
             else if(sdlEvent.type == SDL_EVENT_MOUSE_MOTION){
                 MouseMovedEvent e(sdlEvent.motion.x, sdlEvent.motion.y);
+                Input::SetMousePosition(sdlEvent.motion.x, sdlEvent.motion.y);
+
                 m_Data.EventCallback(e);
             }
             else if(sdlEvent.type == SDL_EVENT_MOUSE_BUTTON_DOWN){
                 MouseButtonCode btn = static_cast<MouseButtonCode>(sdlEvent.button.button);
+                Input::SetMouseButtonPressed(btn, true);
+                Input::SetMouseButtonReleased(btn, false);
+
                 MouseButtonPressedEvent e(btn);
                 m_Data.EventCallback(e);
             }
             else if(sdlEvent.type == SDL_EVENT_MOUSE_BUTTON_UP){
                 MouseButtonCode btn = static_cast<MouseButtonCode>(sdlEvent.button.button);
+                Input::SetMouseButtonPressed(btn, false);
+                Input::SetMouseButtonReleased(btn, true);
+
                 MouseButtonReleasedEvent e(btn);
                 m_Data.EventCallback(e);
             }
             else if(sdlEvent.type == SDL_EVENT_MOUSE_WHEEL){
                 MouseScrollEvent e(sdlEvent.wheel.x, sdlEvent.wheel.y);
+                Input::SetMouseWheel(sdlEvent.wheel.x, sdlEvent.wheel.y);
+
                 m_Data.EventCallback(e);
             }
 

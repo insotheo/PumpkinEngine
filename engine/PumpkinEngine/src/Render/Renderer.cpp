@@ -44,6 +44,10 @@ namespace Pumpkin{
         window->SetVSync(window->GetVSync());
 
         glEnable(GL_DEPTH_TEST);
+        
+        glEnable(GL_CULL_FACE);
+        glFrontFace(GL_CCW);
+        glCullFace(GL_BACK);
 
         AllocateNewBlock();
 

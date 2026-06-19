@@ -6,6 +6,7 @@
 #include "Core/Debug.h"
 #include "Core/Window.h"
 #include "Event/Event.h"
+#include "Core/Input.h"
 #include "Event/WindowEvent.h"
 #include "Render/Renderer.h"
 #include "Render/Shader.h"
@@ -21,6 +22,8 @@ namespace Pumpkin{
         s_AppInst = this;
 
         if(!m_AppSpecification.Headless){
+            Input::Init();
+
             m_Window = CreateScope<Window>(WindowProps { .Title = m_AppSpecification.Name });
             m_Window->SetEventCallback([this](auto& event) { OnEvent(event); });
             
@@ -62,8 +65,9 @@ namespace Pumpkin{
             2u, 3u, 0u
         };
 
-        triangleMat.SetFloat("u_Scale", 0.5f);
-        triangleMat.SetVec2("u_Offset", glm::vec2{0.5f, 0.5f});
+        glm::vec2 offset{0.f, 0.f};
+        float velocity = 0.5f;
+        triangleMat.SetFloat("u_Scale", 0.75f);
         triangleMat.SetTexture("u_Texture", texture);
 
         Mesh triangle = m_Renderer->AllocateMesh(vertices, indices, VertexLayoutType::Simple2D);
@@ -73,13 +77,18 @@ namespace Pumpkin{
             float deltaTime = std::chrono::duration<float>(currentTime - lastTime).count();
             lastTime = currentTime;
             if(deltaTime > 0.1) deltaTime = 0.1;
-
-            //layers updating
-            for(auto& layer : m_LayerStack)
-                layer->OnUpdate(deltaTime);
-
             
+            //TEST
+            if(Input::IsKeyPressed(KeyCode::W)) offset.y += 1.f;
+            else if(Input::IsKeyPressed(KeyCode::S)) offset.y -= 1.f;
+            else if(Input::IsKeyPressed(KeyCode::D)) offset.x += 1.f;
+            else if(Input::IsKeyPressed(KeyCode::A)) offset.x -= 1.f;
+
+            triangleMat.SetVec2("u_Offset", offset * velocity * deltaTime);
+
             if(m_Window){
+                Input::Update();
+
                 m_Window->OnUpdate(); //events
 
                 m_Renderer->Clear();
@@ -93,9 +102,12 @@ namespace Pumpkin{
         
                 m_Renderer->Present();
             }
-            else{ //headless
-                SDL_Delay(1);
-            }
+
+            //layers updating
+            for(auto& layer : m_LayerStack)
+                layer->OnUpdate(deltaTime);
+
+            if(!m_Window) SDL_Delay(1);
         }
 
         shader->Shutdown();
