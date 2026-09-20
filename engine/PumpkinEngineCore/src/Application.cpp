@@ -1,6 +1,6 @@
 #include <Application.hpp>
 
-namespace Pumpkin {
+namespace Pumpkin::Core {
 Application *Application::s_App;
 
 Application::Application() : m_IsRunning(false) { s_App = this; }
@@ -15,4 +15,4 @@ void Application::Run() {
 }
 
 void Application::Shutdown() { m_IsRunning = false; }
-} // namespace Pumpkin
+} // namespace Pumpkin::Core

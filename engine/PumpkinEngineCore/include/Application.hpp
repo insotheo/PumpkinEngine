@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Pumpkin {
+namespace Pumpkin::Core {
 class Application {
 public:
   static Application *s_App;
@@ -14,4 +14,4 @@ public:
 private:
   bool m_IsRunning;
 };
-} // namespace Pumpkin
+} // namespace Pumpkin::Core

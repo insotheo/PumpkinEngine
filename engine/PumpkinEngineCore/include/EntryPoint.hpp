@@ -1,6 +1,6 @@
 #pragma once
 
-extern Pumpkin::Application *CreatePumpkinApplication();
+extern Pumpkin::Core::Application *CreatePumpkinApplication();
 
 int main(int argc, char **agrv) {
   auto app = CreatePumpkinApplication();
