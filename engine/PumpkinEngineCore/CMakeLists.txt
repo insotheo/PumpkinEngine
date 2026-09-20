@@ -1,7 +1,7 @@
 project(PumpkinEngineCore VERSION 0.0.1 LANGUAGES CXX)
 
 set(ENGINE_CORE
-    src/test.cpp
+    src/Application.cpp
 )
 
 add_library(PumpkinEngineCore STATIC ${ENGINE_CORE})

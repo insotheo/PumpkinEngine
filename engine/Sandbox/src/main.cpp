@@ -1,6 +1,7 @@
-#include <test.hpp>
+#include <PumpkinEngineCore.hpp>
 
-int main(void) {
-  test();
-  return 0;
+class SandboxApplication : public Pumpkin::Application {};
+
+Pumpkin::Application *CreatePumpkinApplication() {
+  return new SandboxApplication();
 }
