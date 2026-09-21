@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Log.hpp"
+#include "Core/Log.hpp"
 
-#include "Application.hpp"
-#include "EntryPoint.hpp"
+#include "Core/Application.hpp"
+#include "Core/EntryPoint.hpp"
 
-#include "Event.hpp"
+#include "Event/Event.hpp"

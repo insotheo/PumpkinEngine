@@ -2,6 +2,7 @@ project(PumpkinEngineCore VERSION 0.0.1 LANGUAGES CXX)
 
 set(ENGINE_CORE
     src/Application.cpp
+    src/EventTypeCounter.cpp
 )
 
 add_library(PumpkinEngineCore STATIC ${ENGINE_CORE})
