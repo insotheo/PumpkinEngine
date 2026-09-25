@@ -5,7 +5,6 @@ extern Pumpkin::Core::Application *CreatePumpkinApplication();
 int main(int argc, char **agrv) {
   auto app = CreatePumpkinApplication();
   PE_LOG_CORE_TRACE("Application was created successfuly!");
-  app->OnCreated();
   app->Run();
   delete app;
   return 0;
