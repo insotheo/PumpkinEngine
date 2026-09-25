@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Core/Time.hpp"
+
 namespace Pumpkin::Core {
 class Application {
 public:
@@ -15,5 +17,6 @@ public:
 private:
   static Application *s_App;
   bool m_IsRunning;
+  Time m_Time;
 };
 } // namespace Pumpkin::Core
