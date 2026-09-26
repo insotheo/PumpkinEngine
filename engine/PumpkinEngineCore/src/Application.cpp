@@ -28,6 +28,10 @@ void Application::Run() {
     m_Time.FrameCount++;
 
     m_SubsystemManager.UpdateAll(m_Time);
+
+    if (!m_IsRunning)
+      break;
+
     m_SubsystemManager.RenderAll();
   }
 }
