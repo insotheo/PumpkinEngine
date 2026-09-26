@@ -13,4 +13,6 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
 
 add_subdirectory(PumpkinEngineCore)
+add_subdirectory(PumpkinEngineSDL)
+
 add_subdirectory(Sandbox)

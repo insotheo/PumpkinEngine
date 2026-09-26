@@ -1,18 +1,12 @@
 #include <PumpkinEngineCore.hpp>
-
-class SomeUselessSubsystem : public Pumpkin::Core::PESubsystem {
-public:
-  void OnBegin() override { PE_LOG_WARN("Subsystem was initialized!"); }
-  void OnShutdown() override { PE_LOG_WARN("Subsystem was shutted down!"); }
-
-  void OnUpdate(const Pumpkin::Core::Time &time) override {
-    PE_LOG_INFO("FPS: {}", 1 / time.DeltaTime);
-  }
-};
+#include <PumpkinEngineSDLGraphics.hpp>
 
 class SandboxApplication : public Pumpkin::Core::Application {
   void OnCreated() override {
-    GetSubsystemManager().RegisterSubsystem<SomeUselessSubsystem>();
+    GetSubsystemManager()
+        .RegisterSubsystem<Pumpkin::SDL::Graphics::PESDLGraphiscSubsystem>(
+            Pumpkin::SDL::Graphics::WindowInfo{
+                .Width = 800, .Height = 600, .Title = "Hello, World!"});
   }
 };
 

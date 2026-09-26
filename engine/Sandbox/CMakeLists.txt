@@ -7,5 +7,7 @@ set(SANDBOX_SOURCES
 add_executable(Sandbox ${SANDBOX_SOURCES})
 
 target_link_libraries(Sandbox
-    PRIVATE PumpkinEngineCore
+    PRIVATE
+        PumpkinEngineCore
+        PumpkinEngineSDLGraphics
 )
