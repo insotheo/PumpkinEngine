@@ -18,7 +18,7 @@ void Renderer::Init(SDL_Window *wnd) {
                                  nullptr);
 
   if (!m_Device) {
-    PE_LOG_CORE_ERROR("Failed to create GPU device: ", SDL_GetError());
+    PE_LOG_CORE_ERROR("Failed to create GPU device: {}", SDL_GetError());
     m_Device = nullptr;
     return;
   }
