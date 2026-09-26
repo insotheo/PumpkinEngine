@@ -53,7 +53,6 @@ void Renderer::Render() {
   bool success = SDL_AcquireGPUSwapchainTexture(cmdBuff, m_Wnd, &swapchainTxt,
                                                 nullptr, nullptr);
   if (!swapchainTxt || !success) {
-
     SDL_CancelGPUCommandBuffer(cmdBuff);
     return;
   }

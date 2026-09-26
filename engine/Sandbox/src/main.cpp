@@ -11,5 +11,7 @@ class SandboxApplication : public Pumpkin::Core::Application {
 };
 
 Pumpkin::Core::Application *CreatePumpkinApplication() {
+  PE_LOG_TRACE("Position: {}", Pumpkin::Core::PEVec2(1, 1));
+  PE_LOG_TRACE("E is {}", Pumpkin::Core::PEMat4(1.f));
   return new SandboxApplication();
 }
